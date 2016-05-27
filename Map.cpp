@@ -99,15 +99,15 @@ void Map::update()
 
 void Map::animation()
 {
-	if (myCoinY > myPlatformTexture.getSize().y / 2)
-	{
-		coinYSpeed = 5;
-	}
-	else if(myCoinY > 0)
-	{
-		coinYSpeed = -5;
-	}
-	myCoinY += coinYSpeed;
+	//if (myCoinY > myPlatformTexture.getSize().y / 2)
+	//{
+	//	coinYSpeed = 5;
+	//}
+	//else if(myCoinY > 0)
+	//{
+	//	coinYSpeed = -5;
+	//}
+	//myCoinY += coinYSpeed;
 	for (int i = 0; i < this->myCoinCount - 1; i++)
 	{
 		myCoinPos = sf::Vector2f(this->myCoinX+myPlatformTexture.getSize().x*i, this->myCoinY+1);

@@ -101,7 +101,13 @@ int main()
 		}
 		for (auto n : levelOne.getMyCoins())
 		{
-			gameOne.pointsCollision(Dude.getMySprite(),n);
+			int i = 0;
+			if (gameOne.pointsCollision(Dude.getMySprite(), n))
+			{
+				levelOne.coinVectorResize(i);
+				break;
+			}
+			i++;
 		}
 		window.draw(gameOne.getMyPoints());
 		if (Dude.endGame() == false)

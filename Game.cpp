@@ -13,11 +13,16 @@ Game::~Game()
 {
 }
 
-void Game::pointsCollision(sf::Sprite characterSprite, sf::Sprite sprite)
+bool Game::pointsCollision(sf::Sprite characterSprite, sf::Sprite sprite)
 {
 	if (characterSprite.getGlobalBounds().intersects(sprite.getGlobalBounds()))
 	{
 		myPoints += 1;
+		return true;
+	}
+	else
+	{
+		return false;
 	}
 }
 
@@ -25,6 +30,7 @@ sf::Text Game::getMyPoints()
 {
 	this->ss << this->myPoints;
 	myPointsText.setString(this->ss.str().c_str());
+	myPointsText.setPosition(this->myPointsText.getPosition());
 	return this->myPointsText;
 }
 

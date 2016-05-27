@@ -6,7 +6,7 @@ class Game
 public:
 	Game(int lives, sf::Text pointsText);
 	~Game();
-	void Game::pointsCollision(sf::Sprite characterSprite, sf::Sprite sprite);
+	bool Game::pointsCollision(sf::Sprite characterSprite, sf::Sprite sprite);
 	sf::Text Game::getMyPoints();
 	void Game::update(sf::Vector2f updatePos);
 	void Game::setTextPos(sf::Vector2f pointsPos);

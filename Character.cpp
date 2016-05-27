@@ -118,7 +118,7 @@ void Character::Movement()
 		}
 		else
 		{
-			myPos.x += 7; // 7
+			myPos.x += 30; // 7
 		}
 
 

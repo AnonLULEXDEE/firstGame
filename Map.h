@@ -11,6 +11,7 @@
 		std::vector<sf::RectangleShape> Map::getMyWalls();
 		std::vector<sf::Sprite> Map::getMyCoins();
 		sf::RectangleShape Map::getMap();	
+		void Map::coinVectorResize(int amount);
 	/*	void Map::setPlatforms();*/
 		void Map::update();
 		void Map::animation();
@@ -24,6 +25,7 @@
 		int myPlatformX = 0;
 		int myCoinY = 0;
 		int myCoinX = 0;
+		int eraseAmount = 0;
 		int myWallY = 0;
 		int myWallX = 0;
 		sf::IntRect srcRectangle;

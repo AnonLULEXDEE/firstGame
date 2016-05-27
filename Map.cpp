@@ -110,7 +110,7 @@ void Map::animation()
 	myCoinY += coinYSpeed;
 	for (int i = 0; i < this->myCoinCount - 1; i++)
 	{
-		myCoinPos = sf::Vector2f(this->myCoinX+myPlatformTexture.getSize().x*i, this->myCoinY);
+		myCoinPos = sf::Vector2f(this->myCoinX+myPlatformTexture.getSize().x*i, this->myCoinY+1);
 		this->myCoins[i].setTextureRect(this->srcRectangle);
 		this->myCoins[i].setTexture(this->myCoinTexture);
 		this->myCoins[i].setPosition(myCoinPos);

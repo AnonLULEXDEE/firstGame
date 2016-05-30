@@ -1,11 +1,12 @@
 #include "Map.h"
-#include <Windows.h>
 
 
 
-Map::Map(sf::Vector2f pos, sf::Texture tex, sf::Vector2f rect, float platformCount, sf::Texture platformTexture, sf::Texture wallTexture, sf::Texture coinTexture, int coinXRowAmountFrames, int coinYRowAmountFrames)
+Map::Map(sf::Vector2f pos, sf::Texture tex, sf::Vector2f rect, float platformCount, sf::Texture platformTexture, sf::Texture wallTexture, 
+sf::Texture coinTexture, int coinXRowAmountFrames, int coinYRowAmountFrames, sf::Texture bombTexture, int bombXRowAmountFrames, int bombYRowAmountFrames)
 {
-	this->srcRectangle = sf::IntRect(0, 0, coinTexture.getSize().x / coinXRowAmountFrames, coinTexture.getSize().y / coinYRowAmountFrames);
+	this->srcCoinRectangle = sf::IntRect(0, 0, coinTexture.getSize().x / coinXRowAmountFrames, coinTexture.getSize().y / coinYRowAmountFrames);
+	this->srcBombRectangle = sf::IntRect(0, 0, bombTexture.getSize().x / bombXRowAmountFrames, bombTexture.getSize().y / bombYRowAmountFrames);
 	this->myPlatformTexture = platformTexture;
 	this->myPos = pos;
 	this->myTex = tex;
@@ -13,15 +14,22 @@ Map::Map(sf::Vector2f pos, sf::Texture tex, sf::Vector2f rect, float platformCou
 	this->myPlatformCount = platformCount;
 	this->myWallTexture = wallTexture;
 	this->myCoinTexture = coinTexture;
+	this->myBombTexture = bombTexture;
 	this->myWallY = -(int)myWallTexture.getSize().y * 2;
 	this->mySizeDifference = myPlatformTexture.getSize().x / myWallTexture.getSize().x;
 	this->myPlatforms.resize(platformCount);
 	this->myWalls.resize(mySizeDifference*platformCount);
 	this->myWallCount = mySizeDifference*platformCount;
-	this->myCoins.resize(platformCount / 3);
-	this->myCoinCount = platformCount / 3;
+	this->myCoins.resize(platformCount);
+	this->myCoinCount = platformCount;
 	this->myCoinXRowAmountFrames = coinXRowAmountFrames;
 	this->myCoinYRowAmountFrames = coinYRowAmountFrames;
+	this->myBombs.resize(platformCount);
+	this->myBombCount = platformCount;
+	this->myBombXRowAmountFrames = bombXRowAmountFrames;
+	this->myBombYRowAmountFrames = bombYRowAmountFrames;
+	this->myBombX = myPlatformTexture.getSize().x;
+	this->myBombY = -(int)myPlatformTexture.getSize().y / 7;
 	this->myCoinX = myPlatformTexture.getSize().x;
 	this->myCoinY = -(int)myPlatformTexture.getSize().y / 2;
 	srand(time(NULL));
@@ -62,10 +70,10 @@ Map::~Map()
 }
 
 //retunerar bakgrunds texturen.
-sf::RectangleShape Map::getMap()
-{
-	return this->myBackground;
-}
+//sf::RectangleShape Map::getMap()
+//{
+//	return this->myBackground;
+//}
 
 //void Map::moveMap()
 //{
@@ -91,6 +99,11 @@ std::vector<sf::Sprite> Map::getMyCoins()
 	return this->myCoins;
 }
 
+std::vector<sf::Sprite> Map::getMyBombs()
+{
+	return this->myBombs;
+}
+
 void Map::update()
 {
 	animation();
@@ -101,43 +114,65 @@ void Map::coinVectorResize(int amount)
 	this->myCoins.resize(myCoinCount - 1);
 	this->myCoinCount -= 1 ;
 	this->myCoins.erase(myCoins.begin());
-	this->eraseAmount++;
+	this->eraseCoinAmount++;
 }
+
+void Map::bombVectorResize(int amount)
+{
+	this->myBombs.resize(myBombCount - 1);
+	this->myBombCount -= 1;
+	this->myBombs.erase(myBombs.begin());
+	this->eraseBombAmount++;
+}
+
 
 void Map::animation()
 {
-	//if (myCoinY > myPlatformTexture.getSize().y / 2)
-	//{
-	//	coinYSpeed = 5;
-	//}
-	//else if(myCoinY > 0)
-	//{
-	//	coinYSpeed = -5;
-	//}
-	//myCoinY += coinYSpeed;
+	//Coin animation
 	for (int i = 0; i < this->myCoinCount - 1; i++)
 	{
-		myCoinPos = sf::Vector2f(this->myCoinX+myPlatformTexture.getSize().x*i+myPlatformTexture.getSize().x*this->eraseAmount, this->myCoinY);
-		this->myCoins[i].setTextureRect(this->srcRectangle);
+		myCoinPos = sf::Vector2f(this->myCoinX+myPlatformTexture.getSize().x*i+myPlatformTexture.getSize().x*this->eraseCoinAmount, this->myCoinY);
+		this->myCoins[i].setTextureRect(this->srcCoinRectangle);
 		this->myCoins[i].setTexture(this->myCoinTexture);
 		this->myCoins[i].setPosition(myCoinPos);
 	}
-	//myCoinY += 0.00000000001;
-	//if (myCoinY > 3)
-	//{
-	//	myCoinY = 0;
-	//}
-	srcRectangle.left += srcRectangle.width;
-	if (this->srcRectangle.left >= this->srcRectangle.width*(myCoinXRowAmountFrames))
+	srcCoinRectangle.left += srcCoinRectangle.width;
+	if (this->srcCoinRectangle.left >= this->srcCoinRectangle.width*(myCoinXRowAmountFrames))
 	{
-		srcRectangle.left = 0;
-		srcRectangle.top += srcRectangle.height;
+		srcCoinRectangle.left = 0;
+		srcCoinRectangle.top += srcCoinRectangle.height;
 	}
-	if (this->srcRectangle.top >= this->srcRectangle.height*(myCoinYRowAmountFrames))
+	if (this->srcCoinRectangle.top >= this->srcCoinRectangle.height*(myCoinYRowAmountFrames))
 	{
-		srcRectangle.top = 0;
+		srcCoinRectangle.top = 0;
+	}
+
+	//Bomb animation
+	for (int i = 0; i < this->myBombCount - 1; i++)
+	{
+		myBombPos = sf::Vector2f(this->myBombX + myPlatformTexture.getSize().x*i + myPlatformTexture.getSize().x*this->eraseBombAmount - srcBombRectangle.width, this->myBombY);
+		this->myBombs[i].setTextureRect(this->srcBombRectangle);
+		this->myBombs[i].setTexture(this->myBombTexture);
+		this->myBombs[i].setPosition(myBombPos);
+	}
+	//if (bombCollision == true)
+	//{
+	//	bombAnimation++;
+	//	if (bombAnimation == 1)
+	//	{
+	//		this->srcBombRectangle.left += srcBombRectangle.width;
+	//	}
+	//}
+	if (this->srcBombRectangle.left >= this->srcBombRectangle.width*(myBombXRowAmountFrames))
+	{
+		this->srcBombRectangle.left = 0;
 	}
 }
+
+//void Map::bombCollisionCheck(bool p_collision)
+//{
+//	this->bombCollision = p_collision;
+//}
 
 //Ger bakgrunden olika värden
 //void Map::setBackground()

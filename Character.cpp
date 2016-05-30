@@ -35,7 +35,7 @@ void Character::update()
 {
 	Physics();
 	Movement();
-	endGame();
+	endGameOutOfBorder();
 }
 
 //Retunerar Character's sprite.
@@ -118,7 +118,7 @@ void Character::Movement()
 		}
 		else
 		{
-			myPos.x += 30; // 7
+			myPos.x += 7; // 7
 		}
 
 
@@ -290,14 +290,14 @@ int Character::getSize(std::string XY)
 }
 
 //Simpel funktion som retunerar false om man har fallit under en viss punkt i y.
-bool Character::endGame()
+bool Character::endGameOutOfBorder()
 {
 	if (this->myPos.y > 2000)
 	{
-		return false;
+		return true;
 	}
 	else
 	{
-		return true;
+		return false;
 	}
 }

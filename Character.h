@@ -30,7 +30,7 @@ namespace SFMLProject
 		Character::CollisionStatus Character::getCollisionStatus();
 		Character::CollisionStatus Character::getXCollisionStatus();
 		void Character::CollisionX(sf::RectangleShape rect);
-		bool Character::endGame();
+		bool Character::endGameOutOfBorder();
 		void Character::Move(int speedX, int speedY);
 		void Character::CollisionY(sf::RectangleShape rect);
 		int Character::getSize(std::string XY);
